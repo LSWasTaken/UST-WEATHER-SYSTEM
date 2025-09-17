@@ -39,6 +39,7 @@ const App: React.FC = () => {
   const [bannerType, setBannerType] = useState<'info' | 'warning' | 'danger'>('info');
   const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 768);
 
   const locations = [
     { id: 'santo-tomas', name: 'Santo Tomas', temperature: 30, icon: 'cloud' as const, hasAlert: false },
@@ -85,13 +86,18 @@ const App: React.FC = () => {
       setBannerMessage('You are offline. Showing last cached data.');
       setBannerType('warning');
     };
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
+    window.addEventListener('resize', handleResize);
 
     return () => {
       clearInterval(interval);
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -131,9 +137,11 @@ const App: React.FC = () => {
     return null;
   }
 
+  const bannerLeftOffset = isMobile ? 16 : (sidebarCollapsed ? 24 : 272);
+
   return (
     <div className="min-h-screen">
-      <NotificationBanner message={bannerMessage} type={bannerType} leftOffsetPx={sidebarCollapsed ? 24 : 272} topOffsetPx={20} />
+      <NotificationBanner message={bannerMessage} type={bannerType} leftOffsetPx={bannerLeftOffset} topOffsetPx={20} />
       {/* Sidebar */}
       <Sidebar activeTab={activeTab} onTabChange={setActiveTab} collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(v => !v)} />
 
@@ -145,7 +153,7 @@ const App: React.FC = () => {
       />
 
       {/* Main Content */}
-      <main className={`${sidebarCollapsed ? 'ml-16' : 'ml-64'} pt-16 transition-all duration-200`}>
+      <main className={`${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'} ml-0 pt-16 transition-all duration-200`}>
         <div className="p-6 space-y-6">
           {/* Real-time Updates Bar */}
           <Suspense fallback={<div className="h-10" />}> 
