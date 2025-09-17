@@ -10,17 +10,18 @@ const GoogleMapSection: React.FC<GoogleMapSectionProps> = ({
   zoom = 15 
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<google.maps.Map | null>(null);
+  const mapInstanceRef = useRef<any>(null);
 
   useEffect(() => {
     const initMap = () => {
       if (!mapRef.current || mapInstanceRef.current) return;
 
       // Initialize the map
-      mapInstanceRef.current = new google.maps.Map(mapRef.current, {
+      // @ts-ignore - google maps injected at runtime
+      mapInstanceRef.current = new (window as any).google.maps.Map(mapRef.current, {
         center,
         zoom,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeId: (window as any).google.maps.MapTypeId.ROADMAP,
         styles: [
           {
             featureType: 'all',
@@ -41,7 +42,7 @@ const GoogleMapSection: React.FC<GoogleMapSectionProps> = ({
       });
 
       // Add UST marker
-      new google.maps.Marker({
+      new (window as any).google.maps.Marker({
         position: center,
         map: mapInstanceRef.current,
         title: 'University of Santo Tomas',
@@ -52,12 +53,12 @@ const GoogleMapSection: React.FC<GoogleMapSectionProps> = ({
               <text x="16" y="20" text-anchor="middle" fill="#1f2937" font-family="Arial" font-size="12" font-weight="bold">UST</text>
             </svg>
           `),
-          scaledSize: new google.maps.Size(32, 32)
+          scaledSize: new (window as any).google.maps.Size(32, 32)
         }
       });
 
       // Add weather overlay
-      const weatherOverlay = new google.maps.InfoWindow({
+      const weatherOverlay = new (window as any).google.maps.InfoWindow({
         content: `
           <div style="padding: 10px; background: #1f2937; color: white; border-radius: 8px;">
             <h3 style="margin: 0 0 8px 0; color: #f59e0b;">UST Weather Station</h3>
@@ -67,8 +68,8 @@ const GoogleMapSection: React.FC<GoogleMapSectionProps> = ({
       });
 
       // Add click listener to show weather info
-      mapInstanceRef.current.addListener('click', (event: google.maps.MapMouseEvent) => {
-        if (event.latLng) {
+      mapInstanceRef.current.addListener('click', (event: any) => {
+        if (event && event.latLng) {
           weatherOverlay.setPosition(event.latLng);
           weatherOverlay.open(mapInstanceRef.current);
         }
@@ -76,9 +77,10 @@ const GoogleMapSection: React.FC<GoogleMapSectionProps> = ({
     };
 
     // Load Google Maps script if not already loaded
-    if (!window.google) {
+    // @ts-ignore
+    if (!(window as any).google) {
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY'}&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${(import.meta as any).env?.VITE_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY'}&libraries=places`;
       script.async = true;
       script.defer = true;
       script.onload = initMap;

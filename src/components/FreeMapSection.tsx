@@ -43,7 +43,9 @@ const FreeMapSection: React.FC<FreeMapSectionProps> = ({
       };
 
       loadLeaflet().then(() => {
-        if (window.L) {
+        // @ts-ignore - Leaflet attaches to window at runtime
+        const L = (window as any).L;
+        if (L) {
           // Inject minimal CSS for custom markers (once)
           if (!document.getElementById('leaflet-custom-marker-styles')) {
             const style = document.createElement('style');
@@ -57,7 +59,7 @@ const FreeMapSection: React.FC<FreeMapSectionProps> = ({
           }
 
           const createEmojiIcon = (html: string, variant: 'ust' | 'poi' = 'poi') =>
-            window.L.divIcon({
+            L.divIcon({
               html: `<div class="custom-marker ${variant === 'ust' ? 'custom-marker--ust' : 'custom-marker--poi'}">${html}</div>`,
               className: '',
               iconSize: [32, 32],
@@ -66,16 +68,16 @@ const FreeMapSection: React.FC<FreeMapSectionProps> = ({
             });
 
           // Initialize the map
-          mapInstanceRef.current = window.L.map(mapRef.current).setView([center.lat, center.lng], zoom);
+          mapInstanceRef.current = L.map(mapRef.current).setView([center.lat, center.lng], zoom);
 
           // Add OpenStreetMap tiles
-          window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             maxZoom: 19
           }).addTo(mapInstanceRef.current);
 
           // Add UST marker (highlighted badge icon)
-          const ustMarker = window.L.marker([center.lat, center.lng], {
+          const ustMarker = L.marker([center.lat, center.lng], {
             icon: createEmojiIcon('UST', 'ust'),
             title: 'University of Santo Tomas',
             riseOnHover: true,
@@ -91,7 +93,7 @@ const FreeMapSection: React.FC<FreeMapSectionProps> = ({
           `);
 
           // Add weather overlay
-          const weatherOverlay = window.L.popup();
+          const weatherOverlay = L.popup();
           
           // Add click listener to show weather info
           mapInstanceRef.current.on('click', (e: any) => {
@@ -117,10 +119,10 @@ const FreeMapSection: React.FC<FreeMapSectionProps> = ({
             { name: 'España Boulevard', lat: 14.60902, lng: 120.98750, icon: '🛣️' }
           ];
 
-          const bounds = window.L.latLngBounds([ [center.lat, center.lng] ]);
+          const bounds = L.latLngBounds([ [center.lat, center.lng] ]);
           markersRef.current = [];
           nearbyLocations.forEach(location => {
-            const marker = window.L.marker([location.lat, location.lng], {
+            const marker = L.marker([location.lat, location.lng], {
               icon: createEmojiIcon(location.icon, 'poi'),
               title: location.name,
               draggable: editable && isEditMode,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { HourlyForecast } from '../types/weather';
-import { Clock, Thermometer, Droplets, Wind, Eye, Gauge, Sun, Cloud } from 'lucide-react';
+import { Clock, Thermometer, Droplets, Wind, Cloud } from 'lucide-react';
 
 interface HourlyDetailsProps {
   hourly: HourlyForecast[];
@@ -123,21 +123,7 @@ const HourlyDetails: React.FC<HourlyDetailsProps> = ({ hourly }) => {
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <Eye className="w-4 h-4 text-purple-400" />
-                  <div>
-                    <div className="text-xs text-gray-400">Visibility</div>
-                    <div className="text-sm font-medium text-white">{hour.visibility} km</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <Gauge className="w-4 h-4 text-orange-400" />
-                  <div>
-                    <div className="text-xs text-gray-400">Pressure</div>
-                    <div className="text-sm font-medium text-white">{hour.pressure} hPa</div>
-                  </div>
-                </div>
+                {/* Removed unsupported visibility/pressure fields from HourlyForecast */}
               </div>
 
               {(hour.precipitation || hour.precipitationProbability) && (

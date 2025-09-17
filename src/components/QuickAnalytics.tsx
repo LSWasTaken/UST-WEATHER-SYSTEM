@@ -1,16 +1,17 @@
 import React from 'react';
 import Sparkline from './Sparkline';
 import RingGauge from './RingGauge';
-import { Thermometer, CloudRain, Droplets, ImageDown } from 'lucide-react';
+import { Thermometer, CloudRain, Droplets } from 'lucide-react';
 import ExportButton from './ExportButton';
 
 interface Props {
   temps: number[]; // up to 24
   precip: number[]; // up to 24
   prob: number[]; // up to 24
+  hourlyTimes?: string[]; // optional ISO strings for labels
 }
 
-const QuickAnalytics: React.FC<Props> = ({ temps, precip, prob }) => {
+const QuickAnalytics: React.FC<Props> = ({ temps, precip, prob, hourlyTimes }) => {
   const STORAGE_KEY = 'qa-range-v1';
   const [range, setRange] = React.useState<number>(() => {
     const raw = Number(localStorage.getItem(STORAGE_KEY) || 12);
@@ -20,10 +21,11 @@ const QuickAnalytics: React.FC<Props> = ({ temps, precip, prob }) => {
     try { localStorage.setItem(STORAGE_KEY, String(range)); } catch {}
   }, [range]);
 
-  const slice = (arr: number[]) => arr.slice(0, range);
+  const slice = (arr: any[]) => arr.slice(0, range);
   const tempsS = slice(temps);
   const precipS = slice(precip);
   const probS = slice(prob);
+  const timeLabels: string[] | undefined = hourlyTimes ? slice(hourlyTimes).map(t => new Date(t).toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' })) : undefined;
   const nextHourProb = Math.round(prob[0] ?? 0);
   const high = Math.max(...tempsS);
   const low = Math.min(...tempsS);
@@ -63,7 +65,7 @@ const QuickAnalytics: React.FC<Props> = ({ temps, precip, prob }) => {
               <ExportButton targetId="qa-temp" />
             </div>
           </div>
-          <Sparkline values={tempsS} height={64} stroke="var(--chart-temp)" fill="var(--chart-temp)" area={areaMode} labels={tempsS.map((_,i)=>`${i}h`)} />
+          <Sparkline values={tempsS} height={64} stroke="var(--chart-temp)" fill="var(--chart-temp)" area={areaMode} labels={timeLabels ?? tempsS.map((_,i)=>`${i}h`)} />
         </div>
 
         {/* Precipitation card */}
@@ -75,7 +77,7 @@ const QuickAnalytics: React.FC<Props> = ({ temps, precip, prob }) => {
             </div>
             <ExportButton targetId="qa-precip" />
           </div>
-          <Sparkline values={precipS} height={64} stroke="var(--chart-precip)" fill="var(--chart-precip)" area={areaMode} labels={precipS.map((_,i)=>`${i}h`)} />
+          <Sparkline values={precipS} height={64} stroke="var(--chart-precip)" fill="var(--chart-precip)" area={areaMode} labels={timeLabels ?? precipS.map((_,i)=>`${i}h`)} />
         </div>
 
         {/* Probability gauge */}

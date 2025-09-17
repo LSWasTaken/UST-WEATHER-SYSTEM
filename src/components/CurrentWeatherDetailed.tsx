@@ -34,7 +34,7 @@ const CurrentWeatherDetailed: React.FC<CurrentWeatherDetailedProps> = ({ current
         setObservedAt(parsed.observedAt ?? Date.now());
       } else {
         // Seed with a baseline so UI looks alive
-        const seed = { agreeCount: 3, disagreeCount: 1, userVote: null as const, observedAt: Date.now() - 11 * 60 * 1000 };
+        const seed: { agreeCount: number; disagreeCount: number; userVote: 'agree' | 'disagree' | null; observedAt: number } = { agreeCount: 3, disagreeCount: 1, userVote: null, observedAt: Date.now() - 11 * 60 * 1000 };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
         setAgreeCount(seed.agreeCount);
         setDisagreeCount(seed.disagreeCount);
@@ -66,14 +66,14 @@ const CurrentWeatherDetailed: React.FC<CurrentWeatherDetailedProps> = ({ current
   const handleAgree = () => {
     if (userVote === 'agree') {
       // un-vote
-      const next = { agreeCount: Math.max(0, agreeCount - 1), disagreeCount, userVote: null as const, observedAt };
+      const next: { agreeCount: number; disagreeCount: number; userVote: 'agree' | 'disagree' | null; observedAt: number } = { agreeCount: Math.max(0, agreeCount - 1), disagreeCount, userVote: null, observedAt };
       setAgreeCount(next.agreeCount);
       setUserVote(next.userVote);
       persist(next);
       return;
     }
     const dec = userVote === 'disagree' ? 1 : 0;
-    const next = { agreeCount: agreeCount + 1, disagreeCount: Math.max(0, disagreeCount - dec), userVote: 'agree' as const, observedAt };
+    const next: { agreeCount: number; disagreeCount: number; userVote: 'agree' | 'disagree' | null; observedAt: number } = { agreeCount: agreeCount + 1, disagreeCount: Math.max(0, disagreeCount - dec), userVote: 'agree', observedAt };
     setAgreeCount(next.agreeCount);
     setDisagreeCount(next.disagreeCount);
     setUserVote('agree');
@@ -83,14 +83,14 @@ const CurrentWeatherDetailed: React.FC<CurrentWeatherDetailedProps> = ({ current
   const handleDisagree = () => {
     if (userVote === 'disagree') {
       // un-vote
-      const next = { agreeCount, disagreeCount: Math.max(0, disagreeCount - 1), userVote: null as const, observedAt };
+      const next: { agreeCount: number; disagreeCount: number; userVote: 'agree' | 'disagree' | null; observedAt: number } = { agreeCount, disagreeCount: Math.max(0, disagreeCount - 1), userVote: null, observedAt };
       setDisagreeCount(next.disagreeCount);
       setUserVote(next.userVote);
       persist(next);
       return;
     }
     const dec = userVote === 'agree' ? 1 : 0;
-    const next = { agreeCount: Math.max(0, agreeCount - dec), disagreeCount: disagreeCount + 1, userVote: 'disagree' as const, observedAt };
+    const next: { agreeCount: number; disagreeCount: number; userVote: 'agree' | 'disagree' | null; observedAt: number } = { agreeCount: Math.max(0, agreeCount - dec), disagreeCount: disagreeCount + 1, userVote: 'disagree', observedAt };
     setAgreeCount(next.agreeCount);
     setDisagreeCount(next.disagreeCount);
     setUserVote('disagree');

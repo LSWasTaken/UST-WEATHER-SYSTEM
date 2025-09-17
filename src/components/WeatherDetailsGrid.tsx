@@ -26,8 +26,8 @@ export const WeatherDetailsGrid: React.FC<Props> = ({ data }) => {
 
   const feelsLike = Math.round(data.current.temperature + Math.min(6, Math.max(0, (data.current.humidity - 60) / 10)));
 
-  const sunrise = data.current.sunrise ? new Date(data.current.sunrise) : null;
-  const sunset = data.current.sunset ? new Date(data.current.sunset) : null;
+  const sunrise = null;
+  const sunset = null;
 
   return (
     <section>

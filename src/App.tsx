@@ -173,6 +173,22 @@ const App: React.FC = () => {
                 />
               </Suspense>
 
+              {/* Compact rain metrics */}
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="weather-card p-4">
+                  <div className="text-sm text-gray-300">Rain chance next hour</div>
+                  <div className="mt-1 text-3xl font-bold text-white">{Math.round(weatherData.hourly[0]?.precipitationProbability ?? 0)}%</div>
+                </div>
+                <div className="weather-card p-4">
+                  <div className="text-sm text-gray-300">Rain total next 24h</div>
+                  <div className="mt-1 text-3xl font-bold text-white">{weatherData.hourly.slice(0,24).reduce((s,h)=>s+(h.precipitation||0),0).toFixed(1)} mm</div>
+                </div>
+                <div className="weather-card p-4">
+                  <div className="text-sm text-gray-300">Max rain probability 24h</div>
+                  <div className="mt-1 text-3xl font-bold text-white">{Math.max(...weatherData.hourly.slice(0,24).map(h=>h.precipitationProbability||0))}%</div>
+                </div>
+              </div>
+
               {/* Next rain expected */}
               <Suspense fallback={<div className="h-20 bg-gray-800/30 rounded-lg" />}> 
                 <NextRainExpected hourly={weatherData.hourly} />
