@@ -30,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({ locations, activeLocation, onLocationCh
 
   return (
     <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-600 sticky top-0 z-40 transition-colors">
-      <div className="flex items-center justify-between px-4 py-4 ml-64">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 px-4 py-4 md:ml-64">
         {/* Search Bar */}
         <div className="flex-1 max-w-md">
           <div className="relative">
@@ -45,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({ locations, activeLocation, onLocationCh
         </div>
 
         {/* Location Tabs */}
-        <div className="flex items-center space-x-2 ml-6">
+        <div className="flex items-center space-x-2 md:ml-6">
           {locations.map((location) => (
             <button
               key={location.id}

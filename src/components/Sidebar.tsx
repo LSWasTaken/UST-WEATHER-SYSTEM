@@ -24,7 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, collapsed = f
   };
 
   return (
-    <div className={`${collapsed ? 'w-16' : 'w-64'} fixed left-0 top-0 h-full bg-gray-900 dark:bg-gray-800 border-r border-gray-700 dark:border-gray-600 z-50 transition-all duration-200`}>
+    <div className={`hidden md:block ${collapsed ? 'w-16' : 'w-64'} fixed left-0 top-0 h-full bg-gray-900 dark:bg-gray-800 border-r border-gray-700 dark:border-gray-600 z-50 transition-all duration-200`}>
       <div className="flex flex-col h-full">
         {/* Collapse Toggle */}
         <div className="px-2 py-3 border-b border-gray-700/60 flex items-center justify-end">
