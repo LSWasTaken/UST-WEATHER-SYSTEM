@@ -72,7 +72,7 @@ export const fetchWeatherData = async (): Promise<WeatherData> => {
         'wind_speed_10m'
       ].join(','),
       timezone: 'Asia/Manila',
-      forecast_days: 2, // Get 2 days of hourly data
+      forecast_days: '2', // Get 2 days of hourly data
     });
 
     const response = await fetchWithRetry(`${API_BASE_URL}?${params}`, MAX_RETRIES);
